@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
+	"os"
 	// "reflect"
 )
 
@@ -11,17 +13,19 @@ type Handler interface{}
 type Duck struct {
 	*Injector
 	handlers []Handler // handler all fanc
+	logger   *log.Logger
 	IP       string
 	Port     string
 }
 
 func Incubate() *Duck {
-	return &Duck{Injector: New(), IP: "", Port: "3030"}
+	return &Duck{Injector: New(), IP: "", Port: "3030",
+		logger: log.New(os.Stdout, "\033[0;32;34m[duck] \033[m", 0)}
 }
 
 func (d *Duck) Run() {
-	fmt.Println("[Duck] listening on", d.IP+":"+d.Port)
-	http.ListenAndServe(d.IP+":"+d.Port, d)
+	d.logger.Println("listening on", d.IP+":"+d.Port)
+	d.logger.Fatalln(http.ListenAndServe(d.IP+":"+d.Port, d))
 }
 
 func (d *Duck) ServeHTTP(w http.ResponseWriter, r *http.Request) {
