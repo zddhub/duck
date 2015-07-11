@@ -3,47 +3,40 @@ package main
 import (
 	"fmt"
 	"net/http"
-	"reflect"
+	// "reflect"
 )
 
+type Handler interface{}
+
 type Duck struct {
-	IP   string
-	Port string
+	*Injector
+	handlers []Handler // handler all fanc
+	IP       string
+	Port     string
 }
 
-func Incubate() Duck {
-	return Duck{"", "3030"}
+func Incubate() *Duck {
+	return &Duck{Injector: New(), IP: "", Port: "3030"}
 }
 
-func (d Duck) Run() {
+func (d *Duck) Run() {
 	fmt.Println("[Duck] listening on", d.IP+":"+d.Port)
-	http.ListenAndServe(d.IP+":"+d.Port, nil)
+	http.ListenAndServe(d.IP+":"+d.Port, d)
 }
 
-//: 1
-// func (d Duck) Get(pattern string, f func() string) {
-//  http.HandleFunc(pattern, func(w http.ResponseWriter, r *http.Request) {
-//    fmt.Fprintf(w, f()) // 将f()的返回值写到w
-//  })
-// }
+func (d *Duck) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("[Duck] start ServeHTTP")
 
-//: 2
-func (d Duck) Get(pattern string, i interface{}) {
-	t := reflect.TypeOf(i)
-	v := reflect.ValueOf(i)
-	if v.Kind() != reflect.Func {
-		return
+	for i := 0; i < len(d.handlers); i++ {
+		f := d.handlers[i].(func() string)
+		ret := f()
+		fmt.Fprint(w, ret)
 	}
 
-	http.HandleFunc(pattern, func(w http.ResponseWriter, r *http.Request) {
-		var in = make([]reflect.Value, t.NumIn())
-		if t.NumIn() == 2 {
-			in[0], in[1] = reflect.ValueOf(w), reflect.ValueOf(r)
-		}
-		ret := v.Call(in)
-		if len(ret) != 0 {
-			fmt.Fprintf(w, ret[0].Interface().(string))
-		}
-	})
+	fmt.Println("[Duck] end   ServeHTTP")
+}
 
+func (d *Duck) Get(pattern string, handler Handler) {
+	fmt.Println("[Duck] Get")
+	d.handlers = append(d.handlers, handler)
 }
