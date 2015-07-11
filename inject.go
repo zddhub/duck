@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"reflect"
 )
 
@@ -17,18 +18,37 @@ func (inj *Injector) SetMap(value interface{}) {
 }
 
 func (inj *Injector) Get(t reflect.Type) reflect.Value {
-	return inj.mappers[t]
+	val := inj.mappers[t]
+	if val.IsValid() {
+		return val
+	}
+
+	// if t is Interface, find some implements one.
+	if t.Kind() == reflect.Interface {
+		for k, v := range inj.mappers {
+			if k.Implements(t) {
+				val = v
+				break
+			}
+		}
+	}
+
+	return val
 }
 
-func (inj *Injector) Invoke(i interface{}) []reflect.Value {
+func (inj *Injector) Invoke(i interface{}) ([]reflect.Value, error) {
 	t := reflect.TypeOf(i)
 	if t.Kind() != reflect.Func {
 		panic("Should invoke a function!")
 	}
 	inValues := make([]reflect.Value, t.NumIn())
 	for k := 0; k < t.NumIn(); k++ {
-		inValues[k] = inj.Get(t.In(k))
+		val := inj.Get(t.In(k))
+		if !val.IsValid() {
+			return nil, fmt.Errorf("Value not found for type %v", t.In(k))
+		}
+		inValues[k] = val
 	}
 	ret := reflect.ValueOf(i).Call(inValues)
-	return ret
+	return ret, nil
 }

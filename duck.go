@@ -26,11 +26,18 @@ func (d *Duck) Run() {
 
 func (d *Duck) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("[Duck] start ServeHTTP")
+	d.SetMap(w)
+	d.SetMap(r)
 
 	for i := 0; i < len(d.handlers); i++ {
-		f := d.handlers[i].(func() string)
-		ret := f()
-		fmt.Fprint(w, ret)
+
+		if ret, err := d.Invoke(d.handlers[i]); err == nil {
+			if len(ret) != 0 {
+				fmt.Fprintf(w, ret[0].Interface().(string))
+			}
+		} else {
+			fmt.Println(err)
+		}
 	}
 
 	fmt.Println("[Duck] end   ServeHTTP")
