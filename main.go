@@ -17,5 +17,13 @@ func main() {
 		fmt.Fprintf(w, "Hello Duck!")
 	})
 
+	d.Get("/zddhub/:id", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "zddhub - 1 ")
+	}, func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "zddhub - 2 ")
+	}, func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "zddhub - 3 ")
+	})
+
 	d.Run()
 }

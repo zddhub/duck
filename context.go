@@ -12,11 +12,16 @@ type Context struct {
 	index         int
 }
 
+func (c *Context) Next() {
+	c.index += 1
+	c.Run()
+}
+
 func (c *Context) Run() {
 	// Run all Duck handles
-	for i := 0; i < len(c.handlers); i++ {
+	for c.index < len(c.handlers) {
 
-		if ret, err := c.Invoke(c.handlers[i]); err == nil {
+		if ret, err := c.Invoke(c.handlers[c.index]); err == nil {
 			if len(ret) != 0 {
 				rv := c.Get(c.GetType((*http.ResponseWriter)(nil)))
 				res := rv.Interface().(http.ResponseWriter)
@@ -25,9 +30,12 @@ func (c *Context) Run() {
 		} else {
 			fmt.Println(err)
 		}
+		c.index++
 	}
 	// Run all route handles
-	c.Invoke(c.routerHandler)
+	if c.index == len(c.handlers) {
+		c.Invoke(c.routerHandler)
+	}
 }
 
 type RouterContext struct {

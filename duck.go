@@ -28,6 +28,8 @@ func Incubate() *MatureDuck {
 		logger: log.New(os.Stdout, "\033[0;32;34m[duck] \033[m", 0)}
 	r := NewRouter()
 	d.routerHandler = r.Handle
+	d.SetMap(d.logger)
+	d.Use(Logger())
 	return &MatureDuck{d, r}
 }
 
@@ -40,6 +42,10 @@ func (d *Duck) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	d.logger.Println("----- start ServeHTTP -----")
 	d.createContext(w, r).Run()
 	d.logger.Println("----- end   ServeHTTP -----")
+}
+
+func (d *Duck) Use(handler Handler) {
+	d.handlers = append(d.handlers, handler)
 }
 
 func (d *Duck) createContext(w http.ResponseWriter, r *http.Request) *Context {

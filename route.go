@@ -42,8 +42,6 @@ func (r *router) Handle(w http.ResponseWriter, req *http.Request, c *Context) {
 // Return match route
 func (r *router) MatchRoute(req *http.Request) (*route, map[string]string) {
 	for key, val := range r.routes {
-		fmt.Println(req.Method, req.URL.Path, val.method, val.pattern)
-		fmt.Println(val.pattern)
 		if val.method == req.Method {
 			if match, params := val.Match(req.URL.Path); match {
 				return r.routes[key], params
