@@ -13,6 +13,19 @@ func New() *Injector {
 	return &Injector{make(map[reflect.Type]reflect.Value)}
 }
 
+func (inj *Injector) GetType(value interface{}) reflect.Type {
+	t := reflect.TypeOf(value)
+	for t.Kind() == reflect.Ptr {
+		t = t.Elem()
+	}
+
+	if t.Kind() != reflect.Interface {
+		panic("Called inject.InterfaceOf with a value that is not a pointer to an interface. (*MyInterface)(nil)")
+	}
+
+	return t
+}
+
 func (inj *Injector) SetMap(value interface{}) {
 	inj.mappers[reflect.TypeOf(value)] = reflect.ValueOf(value)
 }
@@ -38,6 +51,7 @@ func (inj *Injector) Get(t reflect.Type) reflect.Value {
 
 func (inj *Injector) Invoke(i interface{}) ([]reflect.Value, error) {
 	t := reflect.TypeOf(i)
+
 	if t.Kind() != reflect.Func {
 		panic("Should invoke a function!")
 	}
