@@ -9,7 +9,6 @@ func main() {
 	d := Incubate()
 
 	d.Get("/", func() string {
-		fmt.Println("Hello world!")
 		return "Hello world!"
 	})
 
@@ -17,7 +16,9 @@ func main() {
 		fmt.Fprintf(w, "Hello Duck!")
 	})
 
-	d.Get("/zddhub/:id", func(w http.ResponseWriter, r *http.Request) {
+	d.Get("/zddhub/:id", func(params map[string]string) string {
+		return "Hello " + params["id"] + " "
+	}, func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "zddhub - 1 ")
 	}, func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "zddhub - 2 ")
