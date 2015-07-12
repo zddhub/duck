@@ -41,9 +41,9 @@ func main() {
 # Getting Help
 
 You can read the follow blog to learn more:
-[Go web framework 1](http://www.zddhub.com/memo/2015/07/04/go-web-framework/)
-[Dependency inject](http://www.zddhub.com/memo/2015/07/05/go-dependency-inject/)
-[Go web framwwork 2](http://www.zddhub.com/memo/2015/07/11/go-web-framework-2/)
+* [Go web framework 1](http://www.zddhub.com/memo/2015/07/04/go-web-framework/)
+* [Dependency inject](http://www.zddhub.com/memo/2015/07/05/go-dependency-inject/)
+* [Go web framwwork 2](http://www.zddhub.com/memo/2015/07/11/go-web-framework-2/)
 
 # About
 
