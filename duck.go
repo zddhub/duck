@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -38,9 +37,9 @@ func (d *Duck) Run() {
 }
 
 func (d *Duck) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("[Duck] start ServeHTTP")
+	d.logger.Println("----- start ServeHTTP -----")
 	d.createContext(w, r).Run()
-	fmt.Println("[Duck] end   ServeHTTP")
+	d.logger.Println("----- end   ServeHTTP -----")
 }
 
 func (d *Duck) createContext(w http.ResponseWriter, r *http.Request) *Context {
