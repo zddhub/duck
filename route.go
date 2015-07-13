@@ -39,8 +39,10 @@ func (r *router) Handle(w http.ResponseWriter, req *http.Request, c *Context) {
 	rc.Run()
 }
 
+type Params map[string]string
+
 // Return match route
-func (r *router) MatchRoute(req *http.Request) (*route, map[string]string) {
+func (r *router) MatchRoute(req *http.Request) (*route, Params) {
 	for key, val := range r.routes {
 		if val.method == req.Method {
 			if match, params := val.Match(req.URL.Path); match {

@@ -16,7 +16,7 @@ func main() {
 		fmt.Fprintf(w, "Hello Duck!")
 	})
 
-	d.Get("/zddhub/:id", func(params map[string]string) string {
+	d.Get("/zddhub/:id", func(params Params) string {
 		return "Hello " + params["id"] + " "
 	}, func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "zddhub - 1 ")
