@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"reflect"
 )
 
 type Context struct {
@@ -20,15 +21,8 @@ func (c *Context) Next() {
 func (c *Context) Run() {
 	// Run all Duck handles
 	for c.index < len(c.handlers) {
-
-		if ret, err := c.Invoke(c.handlers[c.index]); err == nil {
-			if len(ret) != 0 {
-				rv := c.Get(c.GetType((*http.ResponseWriter)(nil)))
-				res := rv.Interface().(http.ResponseWriter)
-				fmt.Fprintf(res, ret[0].Interface().(string))
-			}
-		} else {
-			fmt.Println(err)
+		if val, err := c.Invoke(c.handlers[c.index]); err != nil {
+			ReturnHandler(val, c)
 		}
 		c.index++
 	}
@@ -44,16 +38,29 @@ type RouterContext struct {
 	index    int
 }
 
+type Contexter interface {
+	GetType(interface{}) reflect.Type
+	Get(reflect.Type) reflect.Value
+}
+
 func (rc *RouterContext) Run() {
 	for i := 0; i < len(rc.handlers); i++ {
-		if ret, err := rc.Invoke(rc.handlers[i]); err == nil {
-			if len(ret) != 0 {
-				rv := rc.Get(rc.GetType((*http.ResponseWriter)(nil)))
-				res := rv.Interface().(http.ResponseWriter)
-				fmt.Fprintf(res, ret[0].Interface().(string))
-			}
+		if val, err := rc.Invoke(rc.handlers[i]); err == nil {
+			ReturnHandler(val, rc)
 		} else {
 			fmt.Println(err)
 		}
+	}
+}
+
+func ReturnHandler(val []reflect.Value, c Contexter) {
+	rv := c.Get(c.GetType((*http.ResponseWriter)(nil)))
+	res := rv.Interface().(http.ResponseWriter)
+	if len(val) == 1 {
+		fmt.Fprintf(res, val[0].Interface().(string))
+	} else if len(val) == 2 {
+		// status code
+		res.WriteHeader(int(val[0].Int()))
+		fmt.Fprintf(res, val[1].Interface().(string))
 	}
 }
