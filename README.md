@@ -12,14 +12,6 @@ After installing Go and setting up your [GOPATH](http://golang.org/doc/code.html
 go get github.com/zddhub/duck
 ```
 
-Then run your server:
-
-```go
-go run *.go
-```
-
-You will now have a Duck webserver running on `localhost:3030`, `localhost:3030/zdd`, `localhost:3030/zddhub/1`.
-
 # How to use
 
 You can use Duck like this:
@@ -28,7 +20,7 @@ You can use Duck like this:
 package main
 
 func main() {
-  d := Incubate()
+  d := duck.Incubate()
 
   d.Get("/", func() string {
     return "Hello world!"
@@ -36,6 +28,15 @@ func main() {
 
   d.Run()
 }
+```
+
+Then run your server:
+You will now have a Duck webserver running on `localhost:3030`
+
+You can run more complex case:
+
+```go
+go run main/main.go
 ```
 
 # Getting Help

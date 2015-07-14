@@ -3,10 +3,11 @@ package main
 import (
 	"fmt"
 	"net/http"
+  "github.com/zddhub/duck"
 )
 
 func main() {
-	d := Incubate()
+	d := duck.Incubate()
 
 	d.Get("/", func() string {
 		return "Hello world!"
@@ -16,7 +17,7 @@ func main() {
 		fmt.Fprintf(w, "Hello Duck!")
 	})
 
-	d.Get("/zddhub/:id", func(params Params) string {
+	d.Get("/zddhub/:id", func(params duck.Params) string {
 		return "Hello " + params["id"] + " "
 	}, func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "zddhub - 1 ")
