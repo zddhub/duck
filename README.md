@@ -19,6 +19,8 @@ You can use Duck like this:
 ```go
 package main
 
+import "github.com/zddhub/duck"
+
 func main() {
   d := duck.Incubate()
 
