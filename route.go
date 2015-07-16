@@ -93,6 +93,14 @@ func (r *router) Post(pattern string, handlers ...Handler) Router {
 	return r.addRoute("POST", pattern, handlers)
 }
 
+func (r *router) Put(pattern string, handlers ...Handler) Router {
+	return r.addRoute("PUT", pattern, handlers)
+}
+
+func (r *router) Delete(pattern string, handlers ...Handler) Router {
+	return r.addRoute("DELETE", pattern, handlers)
+}
+
 func (r *router) addRoute(method string, pattern string, h []Handler) Router {
 	handlers := make([]Handler, 0)
 	handlers = append(handlers, h...)
