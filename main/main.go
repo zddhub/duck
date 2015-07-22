@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
+	"github.com/zddhub/duck"
 	"net/http"
-  "github.com/zddhub/duck"
 )
 
 func main() {
@@ -14,6 +14,7 @@ func main() {
 	})
 
 	d.Get("/zdd", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("dddddd")
 		fmt.Fprintf(w, "Hello Duck!")
 	})
 

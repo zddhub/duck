@@ -30,6 +30,7 @@ func Incubate() *MatureDuck {
 	d.routerHandler = r.Handle
 	d.SetMap(d.logger)
 	d.Use(Logger())
+	d.Use(Static("public"))
 	return &MatureDuck{d, r}
 }
 
